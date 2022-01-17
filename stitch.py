@@ -220,21 +220,27 @@ COLOUR_2 = (245, 181, 27)
 
 WIDTH = BLOCKS_X * BLOCK_SIZE 
 HEIGHT = BLOCKS_Y * BLOCK_SIZE 
-FPS = 1
-TITLE = "Hitomezashi stitches"
+FPS = 30
+TITLE = "Hitomezashi Stitch Patterns"
 
 pygame.init()
 pygame.display.set_caption(TITLE)
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 all_sprites = pygame.sprite.Group()
-
 screen.fill((240, 240, 240))
 
 print_lines()
 print_blocks()
 
 running = True
-while running:
-    clock.tick(FPS)
-    pygame.display.flip()
+try:
+    while running:
+        clock.tick(FPS)
+        pygame.display.flip()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+    pygame.quit()
+except SystemExit:
+    pygame.quit()
