@@ -62,12 +62,10 @@ def mark_horizontal_line(phrase, coords):
         elif not phrase_char and coords[0] % 4 == 2:
             return True
 
+phrase_x = 'phrase_1'
+phrase_y = 'phrase_2'
 
-
-phrase_x = 'antonio'
-phrase_y = 'adrian'
-
-phrase_1 = input('Enter phrase 1: ')
+phrase_1 = input('Enter phrase 1 (if blank default phrases are used): ')
 if phrase_1:
     phrase_x = phrase_1
     phrase_y = input('Enter phrase 2: ')
@@ -133,9 +131,9 @@ class Block():
         elif self.pos_y:
             Block.fill_type = Block.fill_row_start
             self.set_fill(self.is_n_border)
+            Block.fill_row_start = self.fill
         else:
             self.set_fill(False)
-            Block.fill_type = Block.fill_row_start
 
 
 
@@ -173,6 +171,33 @@ class Block():
         check_y = self.pos_y
         return (check_x, check_y)
 
+def print_lines():
+    for i, row in enumerate(rows):
+        for j, ch in enumerate(row):
+            pos_x = int((j + 1) / 2) * BLOCK_SIZE
+            pos_y = (i + 1) * BLOCK_SIZE
+            pos_start = [pos_x , pos_y]
+            pos_end = list(pos_start)
+            if ch == '_':
+                pos_end[0] += BLOCK_SIZE
+            elif ch == '|':
+                pos_end[1] -= BLOCK_SIZE
+            pygame.draw.line(screen, LINE_COLOUR, pos_start, pos_end) 
+
+def print_blocks():
+    for key in blocks:
+        block = blocks[key]
+        # print(block.pos_x, block.pos_y, block.fill)
+        pos_y = block.pos_y * BLOCK_SIZE
+        pos_x = block.pos_x * BLOCK_SIZE
+        if block.fill % 2:
+            color = COLOUR_1
+        else:
+            color = COLOUR_2
+        pygame.draw.rect(screen, color, (pos_x, pos_y, BLOCK_SIZE, BLOCK_SIZE))
+        pygame.display.flip()
+        # input('test')
+        
 blocks = {}
 for j in range(0, BLOCKS_Y):
     for i in range(0, BLOCKS_X):
@@ -190,9 +215,8 @@ for key in blocks:
     
 BLOCK_SIZE = 32
 LINE_COLOUR = (32,32,52)
-COLOUR_1 = (1, 32, 16)
-COLOUR_2 = (210, 248, 152)
-COLOUR_3 = (246, 249, 48)
+COLOUR_1 = (22, 63, 88)
+COLOUR_2 = (245, 181, 27)
 
 WIDTH = BLOCKS_X * BLOCK_SIZE 
 HEIGHT = BLOCKS_Y * BLOCK_SIZE 
@@ -207,56 +231,10 @@ all_sprites = pygame.sprite.Group()
 
 screen.fill((240, 240, 240))
 
-
-for i, row in enumerate(rows):
-    for j, ch in enumerate(row):
-        pos_x = int((j + 1) / 2) * BLOCK_SIZE
-        pos_y = (i + 1) * BLOCK_SIZE
-        pos_start = [pos_x , pos_y]
-        pos_end = list(pos_start)
-        if ch == '_':
-            pos_end[0] += BLOCK_SIZE
-        elif ch == '|':
-            pos_end[1] -= BLOCK_SIZE
-        pygame.draw.line(screen, LINE_COLOUR, pos_start, pos_end) 
-
-
-for key in blocks:
-    block = blocks[key]
-    print(block.pos_x, block.pos_y, block.fill)
-    pos_y = block.pos_y * BLOCK_SIZE
-    pos_x = block.pos_x * BLOCK_SIZE
-    if block.fill % 3:
-        color = COLOUR_1
-    else:
-        color = COLOUR_2
-    pygame.draw.rect(screen, color, (pos_x, pos_y, BLOCK_SIZE, BLOCK_SIZE))
-    pygame.display.flip()
-    # input('test')
+print_lines()
+print_blocks()
 
 running = True
 while running:
     clock.tick(FPS)
     pygame.display.flip()
-
-# fill_type = 0
-# while mylist:
-#     fill_type += 1
-#     start_block = mylist[0]
-#     temp_blocks = []
-#     temp_blocks.append(start_block)
-#     while temp_blocks:
-#         block = temp_blocks[0]
-#         block.fill = fill_type
-#         temp_blocks.remove(block)
-#         try:
-#             mylist.remove(block)
-#         except:
-#             pass
-#         for key in block.adjacent_block_keys:
-#             adjacent_block = blocks[key]
-#             temp_blocks.append(blocks[key])
-#             try:
-#                 adjacent_block.adjacent_block_keys.remove((block.pos_x, block.pos_y))
-#             except Exception as e:
-#                 pass
